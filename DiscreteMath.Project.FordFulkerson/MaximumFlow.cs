@@ -2,21 +2,21 @@
 
 public class MaximumFlow
 {
-    private readonly int[,] _capacity;
+    private readonly int[,] _capacityMatrix;
     private readonly int[,] _flow;
     private readonly int[] _parent;
 
-    public MaximumFlow(int[,] capacity)
+    public MaximumFlow(DirectedWeighedGraph graph)
     {
-        _capacity = capacity;
-        int n = capacity.GetLength(0);
+        _capacityMatrix = graph.CapacityMatrix;
+        int n = _capacityMatrix.GetLength(0);
         _flow = new int[n, n];
         _parent = new int[n];
     }
 
     private bool BFS(int source, int sink)
     {
-        bool[] visited = new bool[_capacity.GetLength(0)];
+        bool[] visited = new bool[_capacityMatrix.GetLength(0)];
         Queue<int> queue = new();
         queue.Enqueue(source);
         visited[source] = true;
@@ -25,9 +25,9 @@ public class MaximumFlow
         while (queue.Count > 0)
         {
             int u = queue.Dequeue();
-            for (int v = 0; v < _capacity.GetLength(0); v++)
+            for (int v = 0; v < _capacityMatrix.GetLength(0); v++)
             {
-                if (!visited[v] && _capacity[u, v] - _flow[u, v] > 0)
+                if (!visited[v] && _capacityMatrix[u, v] - _flow[u, v] > 0)
                 {
                     queue.Enqueue(v);
                     _parent[v] = u;
@@ -47,7 +47,7 @@ public class MaximumFlow
             for (int v = sink; v != source; v = _parent[v])
             {
                 int u = _parent[v];
-                pathFlow = Math.Min(pathFlow, _capacity[u, v] - _flow[u, v]);
+                pathFlow = Math.Min(pathFlow, _capacityMatrix[u, v] - _flow[u, v]);
             }
             for (int v = sink; v != source; v = _parent[v])
             {

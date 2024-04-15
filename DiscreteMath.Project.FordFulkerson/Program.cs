@@ -19,12 +19,12 @@ int maxFlow = maximumFlow.FindMaxFlow(source, sink);
 
 Console.WriteLine($"The maximum possible flow is {maxFlow}");*/
 
-List<BenchmarkResult> results = Benchmark.MeasureMaxFlowAlgorithm(graphMatrix =>
+List<BenchmarkResult> results = Benchmark.MeasureMaxFlowAlgorithm(graph =>
 {
-    MaximumFlow maximumFlow = new(graphMatrix);
+    MaximumFlow maximumFlow = new(graph);
     maximumFlow.FindMaxFlow(
         source: 0,
-        sink: graphMatrix.GetLength(0) - 1);
+        sink: graph.CapacityMatrix.GetLength(0) - 1);
 });
 
 Benchmark.PrintResults(results);

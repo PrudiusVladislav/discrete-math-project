@@ -49,12 +49,13 @@ public class Benchmark
     }
     
     public static List<BenchmarkResult> MeasureMaxFlowAlgorithm(
-        Action<int[,]> action, int iterations = 20)
+        Action<DirectedWeighedGraph> action, int iterations = 20)
     {
         Stopwatch stopwatch = new();
-        List<GraphGenerationOptions> options = GenerateOptions();
         GraphFactory factory = new();
         List<BenchmarkResult> results = [];
+        
+        List<GraphGenerationOptions> options = GenerateOptions();
         
         foreach (GraphGenerationOptions option in options)
         {
@@ -62,9 +63,9 @@ public class Benchmark
             
             for (int i = 0; i < iterations; i++)
             {
-                int[,] capacityMatrix = factory.GenerateRandomDirectedGraph(option);
+                DirectedWeighedGraph graph = factory.GenerateRandomDirectedGraph(option);
                 stopwatch.Restart();
-                action(capacityMatrix);
+                action(graph);
                 stopwatch.Stop();
                 benchmarkResult.IterationTimes.Add(stopwatch.Elapsed);
             }
@@ -82,7 +83,7 @@ public class Benchmark
     public static void PrintResults(List<BenchmarkResult> results)
     {
         ConsoleTable table = new();
-        table.AddColumn(new []{"Vertices", "Density", "AvgTime (ms)"});
+        table.AddColumn(new []{ "Vertices", "Density", "AvgTime (ms)" });
         
         foreach (BenchmarkResult result in results)
         {
