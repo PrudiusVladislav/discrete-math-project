@@ -17,7 +17,7 @@ public class MaximumFlow
     private bool BFS(int source, int sink)
     {
         bool[] visited = new bool[_capacity.GetLength(0)];
-        Queue<int> queue = new Queue<int>();
+        Queue<int> queue = new();
         queue.Enqueue(source);
         visited[source] = true;
         _parent[source] = -1;
