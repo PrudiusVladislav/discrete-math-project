@@ -2,21 +2,22 @@
 
 public class MaximumFlow
 {
-    private readonly int[,] _capacityMatrix;
+    private readonly DirectedWeighedGraph _graph;
     private readonly int[,] _flow;
     private readonly int[] _parent;
+    private readonly int _nodesCount;
 
     public MaximumFlow(DirectedWeighedGraph graph)
     {
-        _capacityMatrix = graph.CapacityMatrix;
-        int n = _capacityMatrix.GetLength(0);
-        _flow = new int[n, n];
-        _parent = new int[n];
+        _graph = graph;
+        _nodesCount = graph.CapacityMatrix.GetLength(0);
+        _flow = new int[_nodesCount, _nodesCount];
+        _parent = new int[_nodesCount];
     }
 
     private bool BFS(int source, int sink)
     {
-        bool[] visited = new bool[_capacityMatrix.GetLength(0)];
+        bool[] visited = new bool[_nodesCount];
         Queue<int> queue = new();
         queue.Enqueue(source);
         visited[source] = true;
@@ -25,9 +26,10 @@ public class MaximumFlow
         while (queue.Count > 0)
         {
             int u = queue.Dequeue();
-            for (int v = 0; v < _capacityMatrix.GetLength(0); v++)
+            for (int v = 0; v < _nodesCount; v++)
             {
-                if (!visited[v] && _capacityMatrix[u, v] - _flow[u, v] > 0)
+                // if there is capacity from u to v
+                if (!visited[v] && _graph.CapacityMatrix[u, v] - _flow[u, v] > 0) 
                 {
                     queue.Enqueue(v);
                     _parent[v] = u;
@@ -47,13 +49,13 @@ public class MaximumFlow
             for (int v = sink; v != source; v = _parent[v])
             {
                 int u = _parent[v];
-                pathFlow = Math.Min(pathFlow, _capacityMatrix[u, v] - _flow[u, v]);
+                pathFlow = Math.Min(pathFlow, _graph.CapacityMatrix[u, v] - _flow[u, v]); // find bottleneck
             }
             for (int v = sink; v != source; v = _parent[v])
             {
                 int u = _parent[v];
                 _flow[u, v] += pathFlow;
-                _flow[v, u] -= pathFlow;
+                _flow[v, u] -= pathFlow; // residual capacity
             }
             maxFlow += pathFlow;
         }
