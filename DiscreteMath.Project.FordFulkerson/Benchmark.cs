@@ -52,7 +52,6 @@ public class Benchmark
         Action<DirectedWeighedGraph> action, int iterations = 20)
     {
         Stopwatch stopwatch = new();
-        GraphFactory factory = new();
         List<BenchmarkResult> results = [];
         
         List<GraphGenerationOptions> options = GenerateOptions();
@@ -63,7 +62,7 @@ public class Benchmark
             
             for (int i = 0; i < iterations; i++)
             {
-                DirectedWeighedGraph graph = factory.GenerateRandomDirectedGraph(option);
+                DirectedWeighedGraph graph = DirectedWeighedGraph.CreateRandomGraph(option);
                 stopwatch.Restart();
                 action(graph);
                 stopwatch.Stop();

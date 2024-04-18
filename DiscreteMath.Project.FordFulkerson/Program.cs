@@ -19,6 +19,7 @@ int maxFlow = maximumFlow.FindMaxFlow(source, sink);
 
 Console.WriteLine($"The maximum possible flow is {maxFlow}");*/
 
+// Adjacency Matrix benchmark
 List<BenchmarkResult> results = Benchmark.MeasureMaxFlowAlgorithm(graph =>
 {
     MaximumFlow maximumFlow = new(graph);
@@ -27,4 +28,20 @@ List<BenchmarkResult> results = Benchmark.MeasureMaxFlowAlgorithm(graph =>
         sink: graph.CapacityMatrix.GetLength(0) - 1);
 });
 
+Console.WriteLine("Adjacency Matrix benchmark results:");
 Benchmark.PrintResults(results);
+
+// Adjacency List benchmark
+results = Benchmark.MeasureMaxFlowAlgorithm(graph =>
+{
+    MaximumFlow maximumFlow = new(graph);
+    maximumFlow.FindMaxFlowAdjacencyList(
+        source: 0,
+        sink: graph.AdjacencyList.Length - 1);
+});
+
+Console.WriteLine("Adjacency List benchmark results:");
+
+Benchmark.PrintResults(results);
+
+
