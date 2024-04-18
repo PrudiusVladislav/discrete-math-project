@@ -5,7 +5,7 @@ public class DirectedWeighedGraph
     private static readonly Random Random = new();
     
     public int[,] CapacityMatrix { get; }
-    public List<(int,int)>[] AdjacencyList { get; }
+    public List<Neighbour>[] AdjacencyList { get; }
 
     public DirectedWeighedGraph(int[,] capacityMatrix)
     {
@@ -13,7 +13,7 @@ public class DirectedWeighedGraph
         AdjacencyList = CreateAdjacencyListFromCapacityMatrix(capacityMatrix);
     }
     
-    public DirectedWeighedGraph(List<(int, int)>[] adjacencyList)
+    public DirectedWeighedGraph(List<Neighbour>[] adjacencyList)
     {
         AdjacencyList = adjacencyList;
         CapacityMatrix = CreateCapacityMatrixFromAdjacencyList(adjacencyList);
@@ -48,7 +48,7 @@ public class DirectedWeighedGraph
         return new DirectedWeighedGraph(capacityMatrix);
     }
     
-    private static int[,] CreateCapacityMatrixFromAdjacencyList(List<(int, int)>[] adjacencyList)
+    private static int[,] CreateCapacityMatrixFromAdjacencyList(List<Neighbour>[] adjacencyList)
     {
         int numVertices = adjacencyList.Length;
         int[,] capacityMatrix = new int[numVertices, numVertices];
@@ -64,19 +64,19 @@ public class DirectedWeighedGraph
         return capacityMatrix;
     }
     
-    private static List<(int, int)>[] CreateAdjacencyListFromCapacityMatrix(int[,] capacityMatrix)
+    private static List<Neighbour>[] CreateAdjacencyListFromCapacityMatrix(int[,] capacityMatrix)
     {
         int numVertices = capacityMatrix.GetLength(0);
-        List<(int, int)>[] adjacencyList = new List<(int, int)>[numVertices];
+        List<Neighbour>[] adjacencyList = new List<Neighbour>[numVertices];
 
         for (int i = 0; i < numVertices; i++)
         {
-            adjacencyList[i] = new List<(int, int)>();
+            adjacencyList[i] = new List<Neighbour>();
             for (int j = 0; j < numVertices; j++)
             {
                 if (capacityMatrix[i, j] > 0)
                 {
-                    adjacencyList[i].Add((j, capacityMatrix[i, j]));
+                    adjacencyList[i].Add(new Neighbour(j, capacityMatrix[i, j]));
                 }
             }
         }
@@ -103,3 +103,5 @@ public class DirectedWeighedGraph
         return numEdges;
     }
 }
+
+public record struct Neighbour(int Node, int EdgeCapacity);

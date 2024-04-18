@@ -97,7 +97,7 @@ public class MaximumFlow
                 int u = _parent[v];
                 pathFlow = Math.Min(
                     pathFlow, 
-                    _graph.AdjacencyList[u].First(x => x.Item1 == v).Item2); // find bottleneck
+                    _graph.AdjacencyList[u].First(n => n.Node == v).EdgeCapacity); // find bottleneck
             }
             for (int v = sink; v != source; v = _parent[v])
             {
