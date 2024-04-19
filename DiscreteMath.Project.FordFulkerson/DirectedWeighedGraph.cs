@@ -3,22 +3,22 @@ namespace DiscreteMath.Project.FordFulkerson;
 public class DirectedWeighedGraph
 {
     private static readonly Random Random = new();
-    
+
     public int[,] CapacityMatrix { get; }
-    public List<Neighbour>[] AdjacencyList { get; }
+    public List<Dictionary<int, int>> AdjacencyList { get; }
 
     public DirectedWeighedGraph(int[,] capacityMatrix)
     {
         CapacityMatrix = capacityMatrix;
         AdjacencyList = CreateAdjacencyListFromCapacityMatrix(capacityMatrix);
     }
-    
-    public DirectedWeighedGraph(List<Neighbour>[] adjacencyList)
+
+    public DirectedWeighedGraph(List<Dictionary<int, int>> adjacencyList)
     {
         AdjacencyList = adjacencyList;
         CapacityMatrix = CreateCapacityMatrixFromAdjacencyList(adjacencyList);
     }
-    
+
     public static DirectedWeighedGraph CreateRandomGraph(GraphGenerationOptions options)
     {
         int[,] capacityMatrix = new int[options.NumVertices, options.NumVertices];
@@ -47,10 +47,10 @@ public class DirectedWeighedGraph
 
         return new DirectedWeighedGraph(capacityMatrix);
     }
-    
-    private static int[,] CreateCapacityMatrixFromAdjacencyList(List<Neighbour>[] adjacencyList)
+
+    private static int[,] CreateCapacityMatrixFromAdjacencyList(List<Dictionary<int, int>> adjacencyList)
     {
-        int numVertices = adjacencyList.Length;
+        int numVertices = adjacencyList.Count;
         int[,] capacityMatrix = new int[numVertices, numVertices];
 
         for (int i = 0; i < numVertices; i++)
@@ -63,27 +63,29 @@ public class DirectedWeighedGraph
 
         return capacityMatrix;
     }
-    
-    private static List<Neighbour>[] CreateAdjacencyListFromCapacityMatrix(int[,] capacityMatrix)
+
+    private static List<Dictionary<int, int>> CreateAdjacencyListFromCapacityMatrix(int[,] capacityMatrix)
     {
         int numVertices = capacityMatrix.GetLength(0);
-        List<Neighbour>[] adjacencyList = new List<Neighbour>[numVertices];
+        List<Dictionary<int, int>> adjacencyList = [];
 
         for (int i = 0; i < numVertices; i++)
         {
-            adjacencyList[i] = new List<Neighbour>();
+            Dictionary<int, int> neighbours = [];
             for (int j = 0; j < numVertices; j++)
             {
                 if (capacityMatrix[i, j] > 0)
                 {
-                    adjacencyList[i].Add(new Neighbour(j, capacityMatrix[i, j]));
+                    neighbours.Add(j, capacityMatrix[i, j]);
                 }
             }
+
+            adjacencyList.Add(neighbours);
         }
 
         return adjacencyList;
     }
-    
+
     public int GetNumberOfEdges()
     {
         int numVertices = CapacityMatrix.GetLength(0);
@@ -103,5 +105,3 @@ public class DirectedWeighedGraph
         return numEdges;
     }
 }
-
-public record struct Neighbour(int Node, int EdgeCapacity);

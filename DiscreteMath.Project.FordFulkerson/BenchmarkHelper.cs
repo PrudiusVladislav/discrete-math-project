@@ -76,4 +76,14 @@ public class BenchmarkHelper
         stopwatch.Stop();
         return stopwatch.ElapsedMilliseconds;
     }
+    
+    public static T MeasureTime<T>(Func<T> action)
+    {
+        Stopwatch stopwatch = new();
+        stopwatch.Start();
+        T result = action();
+        stopwatch.Stop();
+        Console.WriteLine($"Elapsed time: {stopwatch.Elapsed}");
+        return result;
+    }
 }

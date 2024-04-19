@@ -29,7 +29,7 @@ long executionTimeMs = await BenchmarkHelper.MeasureTimeAsync(async () =>
     Task writeResults = BenchmarkHelper.WriteResults(await maxFlow);
     Task writeResultsWithList = BenchmarkHelper.WriteResults(await maxFlowWithList,
         usedAdjacencyList: true);
-
+    
     await Task.WhenAll(writeResults, writeResultsWithList);
 });
 

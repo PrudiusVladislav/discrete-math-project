@@ -102,9 +102,7 @@ public class MaximumFlow
             for (int v = flowPath.Sink; v != flowPath.Source; v = _parent[v])
             {
                 int u = _parent[v];
-                pathFlow = Math.Min(
-                    pathFlow, 
-                    _graph.AdjacencyList[u].First(n => n.Node == v).EdgeCapacity); 
+                pathFlow = Math.Min(pathFlow, _graph.AdjacencyList[u][v]); 
             }
             for (int v = flowPath.Sink; v != flowPath.Source; v = _parent[v])
             {
