@@ -14,6 +14,13 @@ public class MaximumFlow
         _flow = new int[_nodesCount, _nodesCount];
         _parent = new int[_nodesCount];
     }
+    
+    public int FindMaxFlow(FlowPath flowPath, bool useAdjacencyList)
+    {
+        return useAdjacencyList 
+            ? FindMaxFlowAdjacencyList(flowPath) 
+            : FindMaxFlow(flowPath);
+    }
 
     private bool BFS(int source, int sink)
     {
@@ -64,18 +71,18 @@ public class MaximumFlow
         return visited[sink];
     }
 
-    public int FindMaxFlow(int source, int sink)
+    private int FindMaxFlow(FlowPath flowPath)
     {
         int maxFlow = 0;
-        while (BFS(source, sink))
+        while (BFS(flowPath.Source, flowPath.Sink))
         {
             int pathFlow = int.MaxValue;
-            for (int v = sink; v != source; v = _parent[v])
+            for (int v = flowPath.Sink; v != flowPath.Source; v = _parent[v])
             {
                 int u = _parent[v];
                 pathFlow = Math.Min(pathFlow, _graph.CapacityMatrix[u, v] - _flow[u, v]); // find bottleneck
             }
-            for (int v = sink; v != source; v = _parent[v])
+            for (int v = flowPath.Sink; v != flowPath.Source; v = _parent[v])
             {
                 int u = _parent[v];
                 _flow[u, v] += pathFlow;
@@ -86,24 +93,24 @@ public class MaximumFlow
         return maxFlow;
     }
     
-    public int FindMaxFlowAdjacencyList(int source, int sink)
+    private int FindMaxFlowAdjacencyList(FlowPath flowPath)
     {
         int maxFlow = 0;
-        while (BFSAdjacencyList(source, sink))
+        while (BFSAdjacencyList(flowPath.Source, flowPath.Sink))
         {
             int pathFlow = int.MaxValue;
-            for (int v = sink; v != source; v = _parent[v])
+            for (int v = flowPath.Sink; v != flowPath.Source; v = _parent[v])
             {
                 int u = _parent[v];
                 pathFlow = Math.Min(
                     pathFlow, 
-                    _graph.AdjacencyList[u].First(n => n.Node == v).EdgeCapacity); // find bottleneck
+                    _graph.AdjacencyList[u].First(n => n.Node == v).EdgeCapacity); 
             }
-            for (int v = sink; v != source; v = _parent[v])
+            for (int v = flowPath.Sink; v != flowPath.Source; v = _parent[v])
             {
                 int u = _parent[v];
                 _flow[u, v] += pathFlow;
-                _flow[v, u] -= pathFlow; // residual capacity
+                _flow[v, u] -= pathFlow; 
             }
             maxFlow += pathFlow;
         }

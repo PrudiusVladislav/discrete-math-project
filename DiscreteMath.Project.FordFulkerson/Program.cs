@@ -19,29 +19,18 @@ int maxFlow = maximumFlow.FindMaxFlow(source, sink);
 
 Console.WriteLine($"The maximum possible flow is {maxFlow}");*/
 
-// Adjacency Matrix benchmark
-List<BenchmarkResult> results = Benchmark.MeasureMaxFlowAlgorithm(graph =>
+
+long executionTimeMs = await BenchmarkHelper.MeasureTimeAsync(async () =>
 {
-    MaximumFlow maximumFlow = new(graph);
-    maximumFlow.FindMaxFlow(
-        source: 0,
-        sink: graph.CapacityMatrix.GetLength(0) - 1);
+    Task<List<BenchmarkResult>> maxFlow = BenchmarkHelper.MeasureMaxFlowAsync();
+    Task<List<BenchmarkResult>> maxFlowWithList = BenchmarkHelper.MeasureMaxFlowAsync(
+        useAdjacencyList: true);
+
+    Task writeResults = BenchmarkHelper.WriteResults(await maxFlow);
+    Task writeResultsWithList = BenchmarkHelper.WriteResults(await maxFlowWithList,
+        usedAdjacencyList: true);
+
+    await Task.WhenAll(writeResults, writeResultsWithList);
 });
 
-Console.WriteLine("Adjacency Matrix benchmark results:");
-Benchmark.PrintResults(results);
-
-// Adjacency List benchmark
-results = Benchmark.MeasureMaxFlowAlgorithm(graph =>
-{
-    MaximumFlow maximumFlow = new(graph);
-    maximumFlow.FindMaxFlowAdjacencyList(
-        source: 0,
-        sink: graph.AdjacencyList.Length - 1);
-});
-
-Console.WriteLine("Adjacency List benchmark results:");
-
-Benchmark.PrintResults(results);
-
-
+Console.WriteLine($"Total time: {executionTimeMs} ms");
